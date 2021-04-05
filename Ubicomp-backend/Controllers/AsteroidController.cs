@@ -27,22 +27,37 @@ namespace Ubicomp_backend.Controllers
             _api = new ApiKeys();
             client = new HttpClient();
         }
-       
+
         [Route("GetAll")]
-        public async Task<object> GetAll(){
-  
-    
-            string resultContent="";
-            string url = _api.GetNearByObjects + "?start_date="+ DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd")+"&end_date="+ DateTime.Now.ToString("yyyy-MM-dd")+"&api_key="+_api.key;
+        public async Task<string> GetAll()
+        {
+            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            string yesterday = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+            string resultContent = "";
+            string url = _api.GetNearByObjects + "?start_date=" + yesterday + "&end_date=" + today + "&api_key=" + _api.key;
+            
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                resultContent= await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                resultContent = await response.Content.ReadAsStringAsync();
             }
-            return resultContent = resultContent.Replace(_api.key, "");
-        }
 
+            var json = JObject.Parse(resultContent);
+
+            var nearearth = json?["near_earth_objects"]?[today]?? json?["near_earth_objects"]?[yesterday] 
+                            ?? "";
+
+            foreach(var section in nearearth) { 
+                section.First.Remove();
+            }
+
+            return nearearth.ToString();
+        }
     }
+
+  
+
+
 
 
 }
