@@ -36,6 +36,10 @@ namespace Ubicomp_backend
             var connectionString = connectionStringBuilder.ToString();
                 var connection = new SqliteConnection(connectionString);
 
+
+services.AddCors();
+
+
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlite(
                         "Data Source=Database.db"
@@ -81,14 +85,12 @@ namespace Ubicomp_backend
             }
 
 
-          app.UseCors(
-              options => options.WithOrigins("http://localhost",
-                                              "http://localhost:8080")
-                              .AllowAnyMethod()
-                              .AllowAnyHeader()
-                              .AllowCredentials()
-          );
 
+ app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials());
 
             app.UseHttpsRedirection();
 
