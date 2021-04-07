@@ -18,7 +18,7 @@ namespace Ubicomp_backend.Controllers
     [Route("[controller]")]
     public class AsteroidController
     {
-        static HttpClient client;
+        private HttpClient client;
         private ApiKeys _api;
 
 
