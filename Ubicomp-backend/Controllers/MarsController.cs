@@ -93,6 +93,29 @@ namespace Ubicomp_backend.Controllers
 
 
 
+        [Route("GetMarsWeatherSingle")]
+        public async Task<solTemperature> GetMarsWeatherSingle()
+        {
+
+            string resultContentWeath = "";
+            
+            HttpResponseMessage weatherresponse = await client.GetAsync(_api.SingleWeatherApi);
+
+            if (weatherresponse.IsSuccessStatusCode)
+            {
+                resultContentWeath =  await weatherresponse.Content.ReadAsStringAsync();
+            }
+
+            var json = JObject.Parse(resultContentWeath);
+  
+            return json.ToObject<solTemperature>();
+
+        }
+
+
+
+
+
         [Route("GetMarsImage/{date}")]
         public async Task<dynamic> GetMarsImage(string date)
         {
