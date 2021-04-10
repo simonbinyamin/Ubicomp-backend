@@ -120,8 +120,9 @@ namespace Ubicomp_backend.Controllers
         public async Task<dynamic> GetMarsImage(string date)
         {
 
-            string resultContentWeath = "";
-            string url = _api.GetPhoto + "?earth_date=" + date + "&api_key=" + _api.key + "&camera=NAVCAM";
+            byte[] resultContentImage = new byte[]{};
+            string resultContentWeath = "",
+                   url = _api.GetPhoto + "?earth_date=" + date + "&api_key=" + _api.key + "&camera=FHAZ";
             
             HttpResponseMessage weatherresponse = await client.GetAsync(url);
 
@@ -131,14 +132,26 @@ namespace Ubicomp_backend.Controllers
             }
 
             var json = JObject.Parse(resultContentWeath);
-  
-  
             var feat = json?["photos"] ?? "";
             var img = feat[0]?["img_src"] ?? ""; 
+            var imgURL = img.ToObject<string>();
 
-            return img.ToObject<string>();
+            HttpResponseMessage imageresponse = await client.GetAsync(imgURL);
+
+            if (imageresponse.IsSuccessStatusCode)
+            {
+                resultContentImage =  await imageresponse.Content.ReadAsByteArrayAsync();
+            }
+
+            return Convert.ToBase64String(resultContentImage);
 
         }
+
+
+
+
+
+
 
 
 
