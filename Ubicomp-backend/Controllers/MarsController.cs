@@ -119,7 +119,7 @@ namespace Ubicomp_backend.Controllers
         [Route("GetMarsImage/{date}")]
         public async Task<dynamic> GetMarsImage(string date)
         {
-
+            
             byte[] resultContentImage = new byte[]{};
             string resultContentWeath = "",
                    url = _api.GetPhoto + "?earth_date=" + date + "&api_key=" + _api.key + "&camera=FHAZ";
@@ -133,21 +133,37 @@ namespace Ubicomp_backend.Controllers
 
             var json = JObject.Parse(resultContentWeath);
             var feat = json?["photos"] ?? "";
-            var img = feat[0]?["img_src"] ?? ""; 
-            var imgURL = img.ToObject<string>();
 
-            HttpResponseMessage imageresponse = await client.GetAsync(imgURL);
+           
+            if(feat.Count() == 0) {
+                return _api.imgDef;
+            } else {
+                var img = feat[0]?["img_src"] ?? ""; 
+                var imgURL = img.ToObject<string>();
 
-            if (imageresponse.IsSuccessStatusCode)
-            {
-                resultContentImage =  await imageresponse.Content.ReadAsByteArrayAsync();
+                HttpResponseMessage imageresponse = await client.GetAsync(imgURL);
+
+                if (imageresponse.IsSuccessStatusCode)
+                {
+                    resultContentImage =  await imageresponse.Content.ReadAsByteArrayAsync();
+                }
+
+                return Convert.ToBase64String(ResizeMarsImage(resultContentImage));
             }
 
-            return Convert.ToBase64String(resultContentImage);
 
         }
 
 
+
+        public byte[] ResizeMarsImage(byte[] myBytes) {
+            System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(myBytes);
+            System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+            System.Drawing.Image newImage = fullsizeImage .GetThumbnailImage(100, 100, null, IntPtr.Zero);
+            System.IO.MemoryStream myResult = new System.IO.MemoryStream();
+            newImage.Save(myResult ,System.Drawing.Imaging.ImageFormat.Jpeg);  //Or whatever format you want.
+            return  myResult.ToArray();  //Returns a new byte array.
+        }
 
 
 
