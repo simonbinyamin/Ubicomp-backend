@@ -76,15 +76,8 @@ namespace Ubicomp_backend.Controllers
 
             var soles = (
                     from w in weather
-                    select new solTemperature {
-                        terrestrial_date = w.terrestrial_date,
-                        sol = w.sol,
-                        min_temp = w.min_temp,	
-                        max_temp = w.max_temp,
-                        pressure = w.pressure,	
-                        solLocation = (from l in locationes where l.properties.sol==w.sol select l)
-                        .FirstOrDefault()
-                        }).ToList();
+                    select new solTemperature((from l in locationes where l.properties.sol == w.sol select l).FirstOrDefault(),
+                    w.terrestrial_date, w.sol, w.min_temp, w.max_temp, w.pressure)).ToList();
 
             return soles;
 
@@ -111,9 +104,6 @@ namespace Ubicomp_backend.Controllers
             return json.ToObject<solTemperature>();
 
         }
-
-
-
 
 
         [Route("GetMarsImage/{date}")]

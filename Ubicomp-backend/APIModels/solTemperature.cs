@@ -2,28 +2,22 @@ using System.Text.Json.Serialization;
 
 namespace Ubicomp_backend.APIModels
 {
-        public class solTemperature {
+    public record solTemperature(solLocation solLocation, string terrestrial_date, string sol, string min_temp, string max_temp, string pressure)
+    {
+        public solLocation solLocation { get; init; } = solLocation;
+    }
 
-            public solLocation solLocation { get; set; }
-            public string terrestrial_date { get; set; }
-            public string sol { get; set; }
-            public string min_temp	{ get; set; }
-            public string max_temp { get; set; }
-            public string pressure	{ get; set; }
+    //string id
+    //string pressure_string
+    //string abs_humidity
+    //string wind_speed
+    //string wind_direction
+    //string atmo_opacity
+    //string sunrise
+    //string sunset
+    //string local_uv_irradiance_index
+    //string min_gts_temp
+    //string ls
+    //string season
 
-            //public string id { get; set; }
-            // public string pressure_string { get; set; }
-            // public string abs_humidity { get; set; }
-            // public string wind_speed { get; set; }
-            // public string wind_direction { get; set; }
-            // public string atmo_opacity { get; set; }
-            // public string sunrise { get; set; }
-            // public string sunset { get; set; }
-            // public string local_uv_irradiance_index	{ get; set; }
-            // public string min_gts_temp { get; set; }
-            //public string ls { get; set; }
-            //public string season { get; set; }
-
-
-        }
 }
