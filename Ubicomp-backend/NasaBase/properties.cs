@@ -1,0 +1,1 @@
+public record properties(string sol);

@@ -1,0 +1,1 @@
+public record solLocation(properties properties, geometry geometry);
