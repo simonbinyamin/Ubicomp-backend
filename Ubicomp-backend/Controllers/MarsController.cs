@@ -98,6 +98,26 @@ public class MarsController
     }
 
 
+    [Route("GetMarsWeatherBySol/{sol}")]
+    public async Task<solTemperature> GetMarsWeatherBySol(string sol)
+    {
+
+        string resultContentWeath = "";
+
+        HttpResponseMessage weatherresponse = await client.GetAsync(_api.SingleWeatherApi + "/" + sol);
+
+        if (weatherresponse.IsSuccessStatusCode)
+        {
+            resultContentWeath = await weatherresponse.Content.ReadAsStringAsync();
+        }
+
+        var json = JObject.Parse(resultContentWeath);
+
+        return json.ToObject<solTemperature>();
+
+    }
+
+
     [Route("GetMarsImage/{date}")]
     public async Task<dynamic> GetMarsImage(string date)
     {
